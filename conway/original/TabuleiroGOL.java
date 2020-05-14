@@ -1,5 +1,8 @@
 package conway.original;
 
+import covid.PessoaStatus;
+import covid.Regras;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -10,50 +13,48 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
     private static final long serialVersionUID = 1L;
     private static final int tamanhoCelula = 10;
     private Dimension dimensaoTabuleiro = null;
-    private final ArrayList<Point> ponto = new ArrayList<Point>(0);
+    private final ArrayList<Point> pontos = new ArrayList<Point>(0);
     private int iteracaoPorSegundo;
+    int[][] tabuleiro;
 
     public TabuleiroGOL() {
         addComponentListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
+
     }
 
     private void atualizarTamanhoAray() {
         ArrayList<Point> removeList = new ArrayList<Point>(0);
-        for (Point atual : ponto) {
-            if ((atual.x > dimensaoTabuleiro.width - 1) || (atual.y > dimensaoTabuleiro.height - 1)) {
-                removeList.add(atual);
-            }
-        }
-        ponto.removeAll(removeList);
+        pontos.clear();
+        for (int x = 0; x < dimensaoTabuleiro.width; x++)
+            for (int y = 0; y < dimensaoTabuleiro.height; y++)
+                pontos.add(new Point(x, y));
         repaint();
     }
 
-    public void addPoint(int x, int y) {
-        if (!ponto.contains(new Point(x, y))) {
-            ponto.add(new Point(x, y));
-        }
+    public void addPointDoente(int x, int y) {
+        tabuleiro[x][y] = PessoaStatus.DOENTE;
         repaint();
     }
 
-    public void addPoint(MouseEvent me) {
+    public void addPointDoente(MouseEvent me) {
         int x = me.getPoint().x / tamanhoCelula - 1;
         int y = me.getPoint().y / tamanhoCelula - 1;
         if ((x >= 0) && (x < dimensaoTabuleiro.width) && (y >= 0) && (y < dimensaoTabuleiro.height)) {
-            addPoint(x, y);
+            addPointDoente(x, y);
         }
     }
 
     public void removePoint(int x, int y) {
-        ponto.remove(new Point(x, y));
+        pontos.remove(new Point(x, y));
     }
 
     /**
      * Inicializa o ArrayList que representa o tabuleiro com valores vazios
      */
     public void resetBoard() {
-        ponto.clear();
+        pontos.clear();
     }
 
     /**
@@ -63,7 +64,7 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
         for (int x = 0; x < dimensaoTabuleiro.width; x++) {
             for (int y = 0; y < dimensaoTabuleiro.height; y++) {
                 if (Math.random() * 100 < porcentagem) {
-                    addPoint(x, y);
+                    addPointDoente(x, y);
                 }
             }//Fim do for y
         }//Fim do for x
@@ -77,8 +78,26 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
 
         super.paintComponent(g);
         try {
-            for (Point novoPonto : ponto) {
-                g.setColor(Color.blue);
+            for (Point novoPonto : pontos) {
+                Color pcolor;
+                int status = tabuleiro[novoPonto.x][novoPonto.y];
+                switch (status){
+                    case PessoaStatus.SAUDAVEL:
+                        pcolor = Color.green;
+                        break;
+                    case PessoaStatus.DOENTE:
+                        pcolor = Color.red;
+                        break;
+                    case PessoaStatus.IMUNE:
+                        pcolor = Color.yellow;
+                        break;
+                    case PessoaStatus.MORTO:
+                        pcolor = Color.black;
+                        break;
+                    default:
+                        pcolor = Color.white;
+                }
+                g.setColor(pcolor);
                 g.fillRect(tamanhoCelula + (tamanhoCelula * novoPonto.x), tamanhoCelula + (tamanhoCelula * novoPonto.y), tamanhoCelula, tamanhoCelula);
             }
         } catch (ConcurrentModificationException cme) {
@@ -95,6 +114,7 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
 
     public void componentResized(ComponentEvent e) {
         dimensaoTabuleiro = new Dimension(getWidth() / tamanhoCelula - 2, getHeight() / tamanhoCelula - 2);
+        tabuleiro = new int[dimensaoTabuleiro.width][dimensaoTabuleiro.height];
         atualizarTamanhoAray();
     }
 
@@ -115,7 +135,7 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
 
     public void mouseReleased(MouseEvent e) {
         // Mouse was released (user clicked)
-        addPoint(e);
+        addPointDoente(e);
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -126,30 +146,19 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
 
     public void mouseDragged(MouseEvent e) {
         // Mouse is being dragged, user wants multiple selections
-        addPoint(e);
+        addPointDoente(e);
     }
 
     public void mouseMoved(MouseEvent e) {
     }
 
     public void run() {
-        int vizinhosVivos = 0;
-        ArrayList<Point> celulasVivas = new ArrayList<Point>(0);
-
-        int[][] tabuleiro = new int[dimensaoTabuleiro.width][dimensaoTabuleiro.height];
-        for (Point atual : ponto) {
-            tabuleiro[atual.x][atual.y] = 0;
-            //System.out.println("x:"+atual.x+"       y:"+atual.y);
-        }
-
         for (int x = 0; x < dimensaoTabuleiro.width; x++) {
             for (int y = 0; y < dimensaoTabuleiro.height; y++) {
-                // TODO: codar as regras
+                tabuleiro[x][y] = Regras.calculaStatus(x, y, tabuleiro);
             }// Fim do for j
         }//Fim do for i
 
-        resetBoard();
-        ponto.addAll(celulasVivas);
         repaint();
 
         try {
