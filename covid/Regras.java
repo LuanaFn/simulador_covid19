@@ -30,7 +30,7 @@ public class Regras {
 
         doentes = (int) vizinhos.stream().filter(vizinho -> {
             try {
-                return tabuleiro[vizinho.fst][vizinho.snd] == PessoaStatus.DOENTE;
+                return tabuleiro[vizinho.fst][vizinho.snd] >= PessoaStatus.DOENTE;
             } catch (ArrayIndexOutOfBoundsException ignored) {
                 return false;
             }
@@ -46,8 +46,30 @@ public class Regras {
             case PessoaStatus.SAUDAVEL:
                 status = getStatusPessoaSaudavel(x, y, tabuleiro);
                 break;
-            default:
+            case PessoaStatus.IMUNE:
+            case PessoaStatus.MORTO:
                 status = tabuleiro[x][y];
+                break;
+            default: // caso esteja doente
+                status = getStatusPessoaDoente(tabuleiro[x][y]);
+        }
+
+        return status;
+    }
+
+    private static int getStatusPessoaDoente(int status) {
+        status -= PessoaStatus.DOENTE; // remove o enum e fica apenas com o numero de dias doente
+        if (status >= 20) {
+            Random rand = new Random();
+
+            if(rand.nextInt(1000) <= 3){
+                status = PessoaStatus.MORTO;
+            } else {
+                status = PessoaStatus.IMUNE;
+            }
+        }
+        else {
+            status += 1 + PessoaStatus.DOENTE;
         }
 
         return status;

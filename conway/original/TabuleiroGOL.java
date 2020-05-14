@@ -85,9 +85,6 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
                     case PessoaStatus.SAUDAVEL:
                         pcolor = Color.green;
                         break;
-                    case PessoaStatus.DOENTE:
-                        pcolor = Color.red;
-                        break;
                     case PessoaStatus.IMUNE:
                         pcolor = Color.yellow;
                         break;
@@ -95,7 +92,7 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
                         pcolor = Color.black;
                         break;
                     default:
-                        pcolor = Color.white;
+                        pcolor = Color.red;
                 }
                 g.setColor(pcolor);
                 g.fillRect(tamanhoCelula + (tamanhoCelula * novoPonto.x), tamanhoCelula + (tamanhoCelula * novoPonto.y), tamanhoCelula, tamanhoCelula);
