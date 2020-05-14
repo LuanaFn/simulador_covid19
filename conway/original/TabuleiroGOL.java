@@ -153,9 +153,11 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
     }
 
     public void run() {
+        int[][] tabuleiroIteracaoPassada = tabuleiro;
+
         for (int x = 0; x < dimensaoTabuleiro.width; x++) {
             for (int y = 0; y < dimensaoTabuleiro.height; y++) {
-                tabuleiro[x][y] = Regras.calculaStatus(x, y, tabuleiro);
+                tabuleiro[x][y] = Regras.calculaStatus(x, y, tabuleiroIteracaoPassada);
             }// Fim do for j
         }//Fim do for i
 
