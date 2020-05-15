@@ -1,6 +1,7 @@
 package covid;
 
-import com.sun.tools.javac.util.Pair;
+
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class Regras {
 
         doentes = (int) vizinhos.stream().filter(vizinho -> {
             try {
-                return tabuleiro[vizinho.fst][vizinho.snd] >= PessoaStatus.DOENTE;
+                return tabuleiro[vizinho.getKey()][vizinho.getValue()] >= PessoaStatus.DOENTE;
             } catch (ArrayIndexOutOfBoundsException ignored) {
                 return false;
             }

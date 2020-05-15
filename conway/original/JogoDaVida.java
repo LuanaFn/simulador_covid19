@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 
 public class JogoDaVida extends JFrame implements ActionListener {
     private static final long serialVersionUID = -7599980162359810565L;
-    //private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(800, 600);
-    //private static final Dimension MINIMUM_WINDOW_SIZE = new Dimension(400, 400);
-    private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(1680, 1050);
-    private static final Dimension MINIMUM_WINDOW_SIZE = new Dimension(800, 600);
+    private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(800, 600);
+    private static final Dimension MINIMUM_WINDOW_SIZE = new Dimension(400, 400);
+//    private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(1680, 1050);
+//    private static final Dimension MINIMUM_WINDOW_SIZE = new Dimension(800, 600);
     private static int iteracaoPorSegundo = 3;
     private final JMenuBar menuBar;
     private final JMenu menuArq;
@@ -159,7 +159,6 @@ public class JogoDaVida extends JFrame implements ActionListener {
 
                 public void actionPerformed(ActionEvent e) {
                     if (cb_percent.getSelectedIndex() > 0) {
-                        tabuleiroGol.resetBoard();
                         tabuleiroGol.preencherTabRandom((Integer) cb_percent.getSelectedItem());
                         f_autoFill.dispose();
                     }
@@ -167,8 +166,8 @@ public class JogoDaVida extends JFrame implements ActionListener {
             });
             f_autoFill.setVisible(true);
         } else if (ae.getSource().equals(menuReiniciar)) {
-            tabuleiroGol.resetBoard();
-            tabuleiroGol.repaint();
+            tabuleiroGol.reiniciar();
+            definirRodarParar(false);
         } else if (ae.getSource().equals(menuExecutar)) {
             definirRodarParar(true);
         } else if (ae.getSource().equals(menuParar)) {

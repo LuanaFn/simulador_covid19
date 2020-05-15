@@ -32,6 +32,13 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
                 pontos.add(new Point(x, y));
         repaint();
     }
+    public void reiniciar() {
+
+        for (int x = 0; x < dimensaoTabuleiro.width; x++)
+            for (int y = 0; y < dimensaoTabuleiro.height; y++)
+                tabuleiro[x][y] = PessoaStatus.SAUDAVEL ;
+        repaint();
+    }
 
     public void addPointDoente(int x, int y) {
         tabuleiro[x][y] = PessoaStatus.DOENTE;
@@ -68,6 +75,7 @@ public class TabuleiroGOL extends JPanel implements ComponentListener, MouseList
                 }
             }//Fim do for y
         }//Fim do for x
+        repaint();
     }
 
     /**
